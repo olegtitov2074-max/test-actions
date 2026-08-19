@@ -1,16 +1,31 @@
-__pycache__
-*.pyc
-*.pyo
-.env
-.venv
-venv
-*.egg-info
-dist
-build
+﻿# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+
+# Virtual environment
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker build files
 .dockerignore
 Dockerfile
-.git
+
+# Git
+.git/
 .gitignore
-README.md
-.vscode
-.idea
+
+# Environment
+.env

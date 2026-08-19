@@ -1,5 +1,6 @@
 name: Build and Deploy
 
+# Запускается при push в main
 on:
   push:
     branches: [main]

@@ -1,71 +1,156 @@
 # Server Time API
 
-FastAPI-сервис для получения текущего времени сервера.
+FastAPI-сервис для получения текущего времени, даты и дня недели сервера.
 
-## Эндпоинты
+[![Python](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.141.1-009688.svg)](https://fastapi.tiangolo.com/)
+[![Docker](https://img.shields.io/badge/Docker-supported-blue.svg)](https://www.docker.com/)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-| Метод | Путь | Описание |
-|-------|------|----------|
-| GET | `/time` | Текущее время UTC в формате ISO 8601 |
-| GET | `/date` | Текущая дата и день недели |
-| GET | `/datetime` | Полная дата и время + день недели |
+## 📋 Описание
 
-### Примеры ответов
+API предоставляет три эндпоинта для получения информации о времени сервера:
 
-**GET /time**
-```json
-{
-  "utc": "2025-01-15T12:30:45+0000",
-  "timestamp": 1736939445.0
-}
-```
+| Эндпоинт | Описание |
+|----------|----------|
+| `GET /time` | Текущее время UTC в формате ISO 8601 |
+| `GET /date` | Текущая дата и день недели |
+| `GET /datetime` | Полная дата и время с днём недели |
 
-**GET /date**
-```json
-{
-  "date": "2025-01-15",
-  "day_of_week": "Wednesday",
-  "timestamp": 1736939445.0
-}
-```
+## 🚀 Быстрый старт
 
-**GET /datetime**
-```json
-{
-  "datetime": "2025-01-15T12:30:45+0000",
-  "date": "2025-01-15",
-  "time": "12:30:45",
-  "day_of_week": "Wednesday",
-  "timestamp": 1736939445.0
-}
-```
-
-## Локальный запуск
+### Локальный запуск
 
 ```powershell
+# 1. Создаём виртуальное окружение
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+
+# 2. Устанавливаем зависимости
 pip install -r requirements.txt
+
+# 3. Запускаем сервер
 uvicorn main:app --host 0.0.0.0 --port 8000
 ```
 
-## Docker
+Откройте браузер: http://localhost:8000
+
+### Docker
 
 ```powershell
+# 1. Собираем образ
 docker build -t server-time-api .
-docker run -p 8080:8000 server-time-api
+
+# 2. Запускаем контейнер
+docker run -d --name server-time -p 8002:8000 server-time-api
+
+# 3. Проверяем
+curl http://localhost:8002/time
 ```
 
-## CI/CD
+## 📡 API Документация
 
-Автоматическая сборка и деплой при push в `main`:
+### GET /time
 
-1. GitHub Actions собирает Docker-образ
-2. Публикует образ в GitHub Container Registry (GHCR)
-3. Разворачивает контейнер на сервере через SSH
+Возвращает текущее время UTC.
 
-## Стек
+**Пример запроса:**
+```
+GET http://89.104.74.189:8002/time
+```
 
-- Python 3.11
-- FastAPI
-- Uvicorn
-- Docker
-- GitHub Actions
+**Пример ответа:**
+```json
+{
+  "utc": "2026-08-19T09:20:30+0000",
+  "timestamp": 1787131230.969728
+}
+```
+
+### GET /date
+
+Возвращает текущую дату и день недели.
+
+**Пример запроса:**
+```
+GET http://89.104.74.189:8002/date
+```
+
+**Пример ответа:**
+```json
+{
+  "date": "2026-08-19",
+  "day_of_week": "Wednesday",
+  "timestamp": 1787131230.969728
+}
+```
+
+### GET /datetime
+
+Возвращает полную дату, время и день недели.
+
+**Пример запроса:**
+```
+GET http://89.104.74.189:8002/datetime
+```
+
+**Пример ответа:**
+```json
+{
+  "datetime": "2026-08-19T09:20:30+0000",
+  "date": "2026-08-19",
+  "time": "09:20:30",
+  "day_of_week": "Wednesday",
+  "timestamp": 1787131230.969728
+}
+```
+
+## 📚 Интерактивная документация
+
+FastAPI автоматически генерирует документацию:
+
+- **Swagger UI:** http://89.104.74.189:8002/docs
+- **ReDoc:** http://89.104.74.189:8002/redoc
+
+## 🏗️ Структура проекта
+
+```
+.
+├── .github/workflows/
+│   └── deploy.yml          # CI/CD пайплайн
+├── .dockerignore           # Исключения для Docker
+├── Dockerfile              # Сборка Docker-образа
+├── main.py                 # FastAPI приложение
+├── requirements.txt        # Зависимости Python
+└── README.md               # Документация
+```
+
+## 🔄 CI/CD
+
+Проект использует GitHub Actions для автоматической сборки и деплоя:
+
+1. **Push в main** → запуск Workflow
+2. **Сборка Docker-образа** → публикация в GHCR
+3. **Деплой на сервер** → запуск контейнера через SSH
+
+### Настройка Secrets
+
+Для работы CI/CD добавьте в Settings → Secrets:
+
+- `SSH_HOST` — адрес сервера (89.104.74.189)
+- `SSH_USER` — пользователь (root)
+- `SSH_PRIVATE_KEY` — SSH-ключ для доступа к серверу
+- `SSH_PORT` — порт SSH (22, опционально)
+
+## 🛠️ Технологии
+
+- **Python 3.11** — язык программирования
+- **FastAPI** — веб-фреймворк
+- **Uvicorn** — ASGI сервер
+- **Docker** — контейнеризация
+- **GitHub Actions** — CI/CD
+- **GHCR** — GitHub Container Registry
+
+## 📝 Лицензия
+
+MIT
